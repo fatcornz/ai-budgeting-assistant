@@ -185,14 +185,6 @@ Important: a truly custom domain like `yourname.com` usually requires buying the
 - Explain the biggest tradeoff in this budget.
 - What category should I monitor most closely?
 
-## Resume Bullets
-
-Use these on your resume after pushing the project:
-
-- Developed a full-stack AI budgeting assistant using React, TypeScript, Python, and FastAPI to analyze user financial data across income, expenses, savings goals, debt payments, and 10+ spending categories.
-- Implemented a chatbot-style budgeting coach with optional LLM integration and rule-based fallback to generate realistic suggestions, explain spending tradeoffs, and surface actionable savings/debt recommendations.
-- Built progress tracking and category visualization features to monitor spending trends, savings progress, cash flow, and budgeting behavior through an interactive dashboard.
-
 ## Future Improvements
 
 - Add user authentication
