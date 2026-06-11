@@ -10,6 +10,8 @@ This project is designed to be resume-friendly and GitHub-ready. It includes a p
 - Budget analysis across income, expenses, savings goals, debt payments, and category-level spending
 - AI chatbot UI for budget questions and spending tradeoff explanations
 - Optional OpenAI API support with rule-based fallback when no API key is provided
+- Browser-saved budget and chat memory using localStorage so users do not lose edits after refresh
+- Budget JSON export/import for free backups or moving data to another browser
 - Progress tracking for savings goals
 - Data visualization for category spending trends
 - FastAPI backend with typed Pydantic models
@@ -45,6 +47,7 @@ ai-budgeting-assistant/
 ├── docker-compose.yml
 ├── .env.example
 ├── .gitignore
+├── requirements.txt
 └── README.md
 ```
 
@@ -81,11 +84,10 @@ OPENAI_MODEL=gpt-4o-mini
 ### 3. Run the backend
 
 ```bash
-cd backend
 python -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
+uvicorn app.main:app --reload --port 8000 --app-dir backend
 ```
 
 Backend runs at:
@@ -116,6 +118,12 @@ Frontend runs at:
 http://localhost:5173
 ```
 
+Your budget and chat thread are saved automatically in the browser you use. Use the **Export** button in the Budget Profile panel to download a JSON backup, and **Import** to restore it later or move it to another computer.
+
+If your terminal says `zsh: command not found: npm`, install Node.js first from https://nodejs.org. Then close and reopen Terminal, return to the project, and rerun the frontend commands. The Python virtual environment is only for the backend; it does not install `npm`.
+
+If your prompt already ends in `frontend %`, do not run `cd frontend` again. You are already inside that folder.
+
 ## Run with Docker
 
 ```bash
@@ -128,6 +136,37 @@ Then open:
 ```text
 http://localhost:5173
 ```
+
+## Dependency Files
+
+- Python backend packages live in `backend/requirements.txt`.
+- The root `requirements.txt` points to the backend dependency file, so `pip install -r requirements.txt` works from the project root.
+- Frontend packages live in `frontend/package.json` and are installed with `npm install`.
+- Whenever a new Python package is added, add it to `backend/requirements.txt`. Whenever a new React/TypeScript library is added, add it to `frontend/package.json`.
+
+## Free Local Sharing and Hosting Notes
+
+For normal use, the app is fully free on your machine at `http://localhost:5173`.
+
+To try it on another device on the same Wi-Fi, run the backend and frontend, then open the Vite network URL shown in the frontend terminal, usually:
+
+```text
+http://YOUR_LOCAL_IP:5173
+```
+
+For a public free URL, the most practical no-card path is:
+
+1. Deploy the frontend to Vercel, Netlify, Render Static Sites, or GitHub Pages.
+2. Deploy the FastAPI backend to Render Free Web Service or another free Python host.
+3. Set the frontend environment variable:
+
+```text
+VITE_API_BASE_URL=https://your-backend-url
+```
+
+4. Set the backend `ALLOWED_ORIGINS` value to your frontend URL.
+
+Important: a truly custom domain like `yourname.com` usually requires buying the domain. Free hosts normally provide a free subdomain, such as a `vercel.app`, `onrender.com`, `netlify.app`, or `github.io` URL. The current browser-saved memory works on those free URLs too, but it is per browser/device. For shared accounts across devices, add authentication and a database later.
 
 ## API Endpoints
 

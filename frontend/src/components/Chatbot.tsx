@@ -1,6 +1,7 @@
-import { Bot, Send, Sparkles, UserRound } from 'lucide-react';
-import { FormEvent, useState } from 'react';
+import { Bot, Eraser, Send, Sparkles, UserRound } from 'lucide-react';
+import { FormEvent, useEffect, useState } from 'react';
 import { sendChatMessage } from '../lib/api';
+import { clearSavedChat, loadSavedChat, saveChat } from '../lib/storage';
 import type { BudgetInput, ChatMessage } from '../types/budget';
 
 interface ChatbotProps {
@@ -16,16 +17,21 @@ const STARTER_PROMPTS = [
 
 export function Chatbot({ budget }: ChatbotProps) {
   const [message, setMessage] = useState('');
-  const [history, setHistory] = useState<ChatMessage[]>([
-    {
-      role: 'assistant',
-      content:
-        'Hi! I can analyze your budget, explain spending tradeoffs, and suggest realistic changes. Ask me about savings, debt, or categories to reduce.'
-    }
-  ]);
-  const [actions, setActions] = useState<string[]>([]);
+  const [history, setHistory] = useState<ChatMessage[]>(() => loadSavedChat()?.history ?? [welcomeMessage]);
+  const [actions, setActions] = useState<string[]>(() => loadSavedChat()?.actions ?? []);
   const [loading, setLoading] = useState(false);
-  const [usedLlm, setUsedLlm] = useState<boolean | null>(null);
+  const [usedLlm, setUsedLlm] = useState<boolean | null>(() => loadSavedChat()?.usedLlm ?? null);
+
+  useEffect(() => {
+    saveChat({ history, actions, usedLlm });
+  }, [actions, history, usedLlm]);
+
+  const resetChat = () => {
+    clearSavedChat();
+    setHistory([welcomeMessage]);
+    setActions([]);
+    setUsedLlm(null);
+  };
 
   const submitMessage = async (event?: FormEvent<HTMLFormElement>, override?: string) => {
     event?.preventDefault();
@@ -69,6 +75,9 @@ export function Chatbot({ budget }: ChatbotProps) {
           <Sparkles size={14} /> {usedLlm ? 'LLM enabled' : 'Rule fallback'}
         </span>
       </div>
+      <button className="icon-label-button chat-clear" type="button" onClick={resetChat}>
+        <Eraser size={15} /> Clear chat memory
+      </button>
 
       <div className="starter-prompts">
         {STARTER_PROMPTS.map((prompt) => (
@@ -117,3 +126,9 @@ export function Chatbot({ budget }: ChatbotProps) {
     </section>
   );
 }
+
+const welcomeMessage: ChatMessage = {
+  role: 'assistant',
+  content:
+    'Hi! I can analyze your budget, explain spending tradeoffs, and suggest realistic changes. Ask me about savings, debt, or categories to reduce.'
+};

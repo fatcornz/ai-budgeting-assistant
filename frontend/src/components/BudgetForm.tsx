@@ -1,4 +1,5 @@
-import { Plus, RotateCcw, Trash2 } from 'lucide-react';
+import { ChangeEvent, useRef, useState } from 'react';
+import { Download, Plus, RotateCcw, Save, Trash2, Upload } from 'lucide-react';
 import type { BudgetCategory, BudgetInput, CategoryName, DebtPayment, SavingsGoal } from '../types/budget';
 
 const CATEGORY_OPTIONS: CategoryName[] = [
@@ -20,9 +21,38 @@ interface BudgetFormProps {
   budget: BudgetInput;
   onBudgetChange: (budget: BudgetInput) => void;
   onResetSample: () => void;
+  onExportBudget: () => void;
+  onImportBudget: (file: File) => Promise<void>;
+  onClearLocalData: () => void;
+  saveStatus: 'saved' | 'saving';
 }
 
-export function BudgetForm({ budget, onBudgetChange, onResetSample }: BudgetFormProps) {
+export function BudgetForm({
+  budget,
+  onBudgetChange,
+  onResetSample,
+  onExportBudget,
+  onImportBudget,
+  onClearLocalData,
+  saveStatus
+}: BudgetFormProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [importError, setImportError] = useState('');
+
+  const handleImport = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      await onImportBudget(file);
+      setImportError('');
+    } catch {
+      setImportError('That file could not be imported. Choose a budget JSON backup from this app.');
+    } finally {
+      event.target.value = '';
+    }
+  };
+
   const updateIncome = (monthlyIncome: number) => {
     onBudgetChange({ ...budget, monthly_income: monthlyIncome });
   };
@@ -111,6 +141,28 @@ export function BudgetForm({ budget, onBudgetChange, onResetSample }: BudgetForm
         <button className="ghost-button" type="button" onClick={onResetSample}>
           <RotateCcw size={16} /> Sample data
         </button>
+      </div>
+
+      <div className="memory-panel">
+        <div>
+          <span className="memory-label">
+            <Save size={15} /> Local memory
+          </span>
+          <strong>{saveStatus === 'saved' ? 'Saved in this browser' : 'Saving...'}</strong>
+        </div>
+        <div className="memory-actions">
+          <button className="icon-label-button" type="button" onClick={onExportBudget}>
+            <Download size={15} /> Export
+          </button>
+          <button className="icon-label-button" type="button" onClick={() => fileInputRef.current?.click()}>
+            <Upload size={15} /> Import
+          </button>
+          <button className="text-button inline" type="button" onClick={onClearLocalData}>
+            Clear
+          </button>
+        </div>
+        <input ref={fileInputRef} className="sr-only" type="file" accept="application/json" onChange={handleImport} />
+        {importError && <p className="form-error">{importError}</p>}
       </div>
 
       <label className="input-label">
