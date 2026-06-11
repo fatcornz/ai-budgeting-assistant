@@ -1,0 +1,581 @@
+:root {
+  color-scheme: light;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #f6f2ea;
+  color: #1f2933;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(45, 125, 115, 0.16), transparent 34%),
+    radial-gradient(circle at 80% 10%, rgba(230, 157, 73, 0.22), transparent 32%),
+    #f6f2ea;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.app-shell {
+  width: min(1480px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 28px 0 64px;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 24px;
+  align-items: stretch;
+  margin-bottom: 24px;
+}
+
+.hero-copy,
+.hero-card,
+.panel,
+.metric-card,
+.score-card {
+  border: 1px solid rgba(45, 54, 65, 0.12);
+  box-shadow: 0 18px 60px rgba(31, 41, 51, 0.08);
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(16px);
+  border-radius: 28px;
+}
+
+.hero-copy {
+  padding: 36px;
+}
+
+.project-tag,
+.llm-badge,
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #2d7d73;
+  font-weight: 800;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.hero h1 {
+  font-size: clamp(2.2rem, 5vw, 4.2rem);
+  line-height: 0.96;
+  max-width: 900px;
+  margin: 18px 0;
+  letter-spacing: -0.06em;
+}
+
+.hero p {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: #586474;
+  max-width: 760px;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.primary-link,
+.secondary-link,
+.ghost-button,
+.small-button,
+.chat-form button {
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 18px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 800;
+}
+
+.primary-link,
+.chat-form button {
+  background: #2d7d73;
+  color: white;
+}
+
+.secondary-link,
+.ghost-button,
+.small-button {
+  background: #eef7f5;
+  color: #255f58;
+}
+
+.hero-card {
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+}
+
+.hero-card strong {
+  font-size: 2rem;
+  text-transform: capitalize;
+}
+
+.hero-card strong.connected {
+  color: #2d7d73;
+}
+
+.hero-card strong.offline {
+  color: #a16207;
+}
+
+.hero-card strong.loading {
+  color: #64748b;
+}
+
+.layout-grid {
+  display: grid;
+  grid-template-columns: 430px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.panel,
+.metric-card,
+.score-card {
+  padding: 24px;
+}
+
+.budget-form {
+  position: sticky;
+  top: 20px;
+  max-height: calc(100vh - 40px);
+  overflow: auto;
+}
+
+.section-header,
+.subsection-title,
+.section-title-row,
+.goal-header,
+.bar-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.section-header h2,
+.subsection-title h3,
+.section-title-row h2 {
+  margin: 3px 0 0;
+}
+
+.compact {
+  margin-bottom: 18px;
+}
+
+.input-label,
+.three-columns label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 0.82rem;
+  color: #667085;
+  font-weight: 700;
+}
+
+input,
+select {
+  width: 100%;
+  border: 1px solid #d9e1e7;
+  background: white;
+  color: #1f2933;
+  border-radius: 14px;
+  padding: 12px 13px;
+  outline: none;
+}
+
+input:focus,
+select:focus {
+  border-color: #2d7d73;
+  box-shadow: 0 0 0 4px rgba(45, 125, 115, 0.12);
+}
+
+.subsection-title {
+  margin: 24px 0 12px;
+}
+
+.scroll-list,
+.stacked-list,
+.goal-list {
+  display: grid;
+  gap: 10px;
+}
+
+.grid-row {
+  display: grid;
+  grid-template-columns: 1fr 118px 42px;
+  gap: 8px;
+}
+
+.icon-button {
+  border: 0;
+  background: #fff3f0;
+  color: #b54708;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+}
+
+.mini-card,
+.goal-card,
+.action-box {
+  border: 1px solid #e5ebef;
+  background: rgba(255, 255, 255, 0.78);
+  border-radius: 20px;
+  padding: 14px;
+}
+
+.three-columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.text-button {
+  border: 0;
+  background: transparent;
+  color: #b54708;
+  padding: 8px 0 0;
+  font-weight: 800;
+}
+
+.main-column {
+  display: grid;
+  gap: 24px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.score-card {
+  grid-row: span 2;
+  background: #1f2933;
+  color: white;
+}
+
+.score-card.good {
+  background: linear-gradient(145deg, #1f2933, #2d7d73);
+}
+
+.score-card.warn {
+  background: linear-gradient(145deg, #1f2933, #a16207);
+}
+
+.score-card.bad {
+  background: linear-gradient(145deg, #1f2933, #b42318);
+}
+
+.score-card strong {
+  display: block;
+  font-size: 5rem;
+  letter-spacing: -0.08em;
+  margin-top: 14px;
+}
+
+.score-card p {
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.5;
+}
+
+.metric-card p,
+.metric-card span,
+.muted,
+.goal-card p,
+.hero-card p {
+  color: #667085;
+}
+
+.metric-card p,
+.metric-card span {
+  margin: 0;
+}
+
+.metric-card strong {
+  display: block;
+  font-size: 1.85rem;
+  margin: 10px 0 6px;
+  letter-spacing: -0.04em;
+}
+
+.wide-card {
+  grid-column: span 4;
+}
+
+.insight-card {
+  grid-column: span 2;
+}
+
+.bar-chart {
+  display: grid;
+  gap: 14px;
+}
+
+.bar-row {
+  display: grid;
+  grid-template-columns: 170px 1fr 82px;
+  gap: 12px;
+  align-items: center;
+}
+
+.bar-label {
+  font-size: 0.9rem;
+  text-transform: capitalize;
+}
+
+.bar-track,
+.progress-track {
+  height: 12px;
+  border-radius: 999px;
+  background: #e8eef2;
+  overflow: hidden;
+}
+
+.bar-fill,
+.progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: #2d7d73;
+}
+
+.bar-fill.watch {
+  background: #d97706;
+}
+
+.bar-fill.high {
+  background: #dc2626;
+}
+
+.bar-fill.low {
+  background: #7c3aed;
+}
+
+.status-pill {
+  text-align: center;
+  border-radius: 999px;
+  padding: 6px 9px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: capitalize;
+}
+
+.status-pill.healthy {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-pill.watch {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-pill.high {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.status-pill.low {
+  background: #ede9fe;
+  color: #5b21b6;
+}
+
+.insight-list {
+  margin: 14px 0 0;
+  padding-left: 18px;
+  color: #405161;
+  line-height: 1.6;
+}
+
+.warning-list li::marker {
+  color: #b42318;
+}
+
+.progress-panel,
+.chatbot-panel {
+  width: 100%;
+}
+
+.goal-card {
+  display: grid;
+  gap: 12px;
+}
+
+.goal-header strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.goal-header span {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #2d7d73;
+}
+
+.chatbot-panel {
+  display: grid;
+  gap: 16px;
+}
+
+.starter-prompts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.starter-prompts button {
+  border: 1px solid #dbe6ea;
+  background: #ffffff;
+  color: #405161;
+  border-radius: 999px;
+  padding: 10px 12px;
+  font-weight: 700;
+}
+
+.chat-window {
+  height: 440px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 6px;
+}
+
+.chat-message {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 10px;
+  max-width: 86%;
+}
+
+.chat-message.user {
+  align-self: flex-end;
+}
+
+.chat-message p {
+  margin: 0;
+  border-radius: 18px;
+  padding: 13px 15px;
+  background: #eef7f5;
+  line-height: 1.55;
+}
+
+.chat-message.user p {
+  background: #1f2933;
+  color: white;
+}
+
+.avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #e8eef2;
+  color: #2d7d73;
+}
+
+.chat-form {
+  display: grid;
+  grid-template-columns: 1fr 52px;
+  gap: 10px;
+}
+
+.chat-form button {
+  width: 52px;
+  padding: 0;
+  border-radius: 16px;
+}
+
+.action-box strong {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.action-box ul {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 1.55;
+}
+
+.empty-state {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  min-height: 360px;
+}
+
+.empty-state p {
+  max-width: 520px;
+  color: #667085;
+}
+
+@media (max-width: 1180px) {
+  .hero,
+  .layout-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .budget-form {
+    position: static;
+    max-height: none;
+  }
+}
+
+@media (max-width: 820px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .score-card,
+  .wide-card,
+  .insight-card {
+    grid-column: span 1;
+  }
+
+  .bar-row {
+    grid-template-columns: 1fr;
+  }
+
+  .three-columns,
+  .grid-row {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-copy {
+    padding: 26px;
+  }
+}

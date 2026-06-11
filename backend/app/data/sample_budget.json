@@ -1,0 +1,25 @@
+{
+  "monthly_income": 4200,
+  "categories": [
+    { "name": "housing", "amount": 1250 },
+    { "name": "food", "amount": 520 },
+    { "name": "transportation", "amount": 300 },
+    { "name": "utilities", "amount": 210 },
+    { "name": "insurance", "amount": 180 },
+    { "name": "debt", "amount": 250 },
+    { "name": "entertainment", "amount": 280 },
+    { "name": "shopping", "amount": 340 },
+    { "name": "healthcare", "amount": 90 },
+    { "name": "subscriptions", "amount": 70 },
+    { "name": "education", "amount": 60 },
+    { "name": "other", "amount": 110 }
+  ],
+  "savings_goals": [
+    { "name": "Emergency Fund", "target_amount": 5000, "current_amount": 1800, "months_to_goal": 18 },
+    { "name": "Moving Fund", "target_amount": 1500, "current_amount": 450, "months_to_goal": 8 }
+  ],
+  "debt_payments": [
+    { "name": "Student Loan", "balance": 8500, "minimum_payment": 150, "interest_rate": 5.2 },
+    { "name": "Credit Card", "balance": 1200, "minimum_payment": 100, "interest_rate": 22.5 }
+  ]
+}

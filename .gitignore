@@ -1,0 +1,24 @@
+# dependencies
+node_modules/
+.venv/
+venv/
+__pycache__/
+.pytest_cache/
+
+# environment
+.env
+.env.local
+.env.*.local
+
+# builds
+frontend/dist/
+frontend/.vite/
+backend/.coverage
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# logs
+*.log
