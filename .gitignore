@@ -14,6 +14,9 @@ __pycache__/
 frontend/dist/
 frontend/.vite/
 backend/.coverage
+*.db
+*.sqlite
+*.sqlite3
 
 # OS / editor
 .DS_Store

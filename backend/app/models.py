@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, List, Literal, Optional
+from typing import List, Literal, Optional
 from pydantic import BaseModel, Field, field_validator
 
 CategoryName = Literal[
@@ -9,12 +9,18 @@ CategoryName = Literal[
     "transportation",
     "utilities",
     "insurance",
-    "debt",
-    "entertainment",
-    "shopping",
     "healthcare",
+    "debt",
+    "services",
     "subscriptions",
+    "shopping",
+    "entertainment",
     "education",
+    "travel",
+    "childcare",
+    "personal care",
+    "gifts",
+    "pets",
     "other",
 ]
 
@@ -28,7 +34,7 @@ class SavingsGoal(BaseModel):
     name: str = Field(min_length=1, max_length=80)
     target_amount: float = Field(gt=0)
     current_amount: float = Field(ge=0)
-    months_to_goal: int = Field(gt=0, le=600)
+    months_to_goal: int = Field(gt=0, le=1200)
 
 
 class DebtPayment(BaseModel):
@@ -47,8 +53,8 @@ class BudgetInput(BaseModel):
     @field_validator("categories")
     @classmethod
     def require_categories(cls, categories: List[BudgetCategory]) -> List[BudgetCategory]:
-        if len(categories) < 5:
-            raise ValueError("At least 5 budget categories are required.")
+        if len(categories) < 3:
+            raise ValueError("At least 3 budget categories are required.")
         return categories
 
 
@@ -91,3 +97,84 @@ class ChatResponse(BaseModel):
 
 class HealthResponse(BaseModel):
     status: str
+
+
+class AuthRequest(BaseModel):
+    username: str = Field(min_length=3, max_length=40)
+    password: str = Field(min_length=8, max_length=128)
+
+
+class AuthResponse(BaseModel):
+    token: str
+    username: str
+
+
+class BudgetProfile(BaseModel):
+    id: int
+    name: str
+    budget: BudgetInput
+    created_at: str
+    updated_at: str
+
+
+class BudgetProfileCreate(BaseModel):
+    name: str = Field(min_length=1, max_length=80)
+    budget: BudgetInput
+
+
+class BudgetHistoryEntry(BaseModel):
+    id: int
+    profile_id: int
+    month: str = Field(pattern=r"^\d{4}-\d{2}$")
+    budget: BudgetInput
+    analysis: BudgetAnalysis
+    created_at: str
+
+
+class BudgetHistoryCreate(BaseModel):
+    profile_id: int
+    month: str = Field(pattern=r"^\d{4}-\d{2}$")
+    budget: BudgetInput
+
+
+class CsvCategorizeRequest(BaseModel):
+    csv_text: str = Field(min_length=1, max_length=200000)
+
+
+class StatementCategorizeRequest(BaseModel):
+    file_name: str = Field(min_length=1, max_length=200)
+    content_type: str = Field(default="", max_length=120)
+    file_data: str = Field(min_length=1, max_length=12000000)
+
+
+class TransactionCategorySummary(BaseModel):
+    name: CategoryName
+    amount: float
+
+
+class CsvCategorizeResponse(BaseModel):
+    categories: List[TransactionCategorySummary]
+    imported_rows: int
+    skipped_rows: int
+
+
+class LessonSnippet(BaseModel):
+    title: str
+    topic: str
+    content: str
+
+
+class LessonSearchResponse(BaseModel):
+    snippets: List[LessonSnippet]
+
+
+class ChatEvaluationResult(BaseModel):
+    prompt: str
+    passed: bool
+    notes: str
+
+
+class ChatEvaluationResponse(BaseModel):
+    passed: int
+    failed: int
+    results: List[ChatEvaluationResult]

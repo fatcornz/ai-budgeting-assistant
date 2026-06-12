@@ -5,6 +5,7 @@ from typing import List
 
 from app.models import BudgetAnalysis, BudgetInput, ChatMessage, ChatResponse
 from app.services.budget_analyzer import analyze_budget
+from app.services.financial_literacy import search_lessons
 
 SYSTEM_PROMPT = """
 You are a budgeting education assistant for young adults and early-career professionals.
@@ -75,6 +76,7 @@ def _try_openai_response(
 
 def _rule_based_reply(message: str, analysis: BudgetAnalysis) -> str:
     lower_message = message.lower()
+    lesson = search_lessons(message, limit=1)[0]
     intro = (
         f"Based on your current budget, your score is {analysis.budget_score}/100. "
         f"You have ${analysis.remaining_cash:,.2f} left after planned expenses and monthly savings targets. "
@@ -84,7 +86,7 @@ def _rule_based_reply(message: str, analysis: BudgetAnalysis) -> str:
         return intro + (
             f"Your current savings target is ${analysis.savings_target_monthly:,.2f}/month, "
             f"which is {analysis.savings_rate:.1f}% of your income. "
-            "A good next step is to automate savings right after payday, then adjust flexible categories if cash flow gets tight."
+            f"{lesson.content} A good next step is to automate savings right after payday, then adjust flexible categories if cash flow gets tight."
         )
 
     if "debt" in lower_message or "loan" in lower_message or "credit" in lower_message:
@@ -105,7 +107,7 @@ def _rule_based_reply(message: str, analysis: BudgetAnalysis) -> str:
 
     recommendations = " ".join(analysis.recommendations[:3])
     warnings = " ".join(analysis.warnings[:2])
-    return intro + (warnings + " " if warnings else "") + recommendations
+    return intro + (warnings + " " if warnings else "") + recommendations + f" Helpful concept: {lesson.content}"
 
 
 def _suggest_actions(analysis: BudgetAnalysis) -> List[str]:

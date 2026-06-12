@@ -2,11 +2,17 @@ import type { BudgetInput, ChatMessage } from '../types/budget';
 
 const BUDGET_STORAGE_KEY = 'ai-budgeting-assistant:budget:v1';
 const CHAT_STORAGE_KEY = 'ai-budgeting-assistant:chat:v1';
+const AUTH_STORAGE_KEY = 'ai-budgeting-assistant:auth:v1';
 
 export interface SavedChatState {
   history: ChatMessage[];
   actions: string[];
   usedLlm: boolean | null;
+}
+
+export interface SavedAuthState {
+  token: string;
+  username: string;
 }
 
 export function loadSavedBudget(): BudgetInput | null {
@@ -31,6 +37,18 @@ export function saveChat(state: SavedChatState) {
 
 export function clearSavedChat() {
   localStorage.removeItem(CHAT_STORAGE_KEY);
+}
+
+export function loadSavedAuth(): SavedAuthState | null {
+  return loadJson<SavedAuthState>(AUTH_STORAGE_KEY);
+}
+
+export function saveAuth(state: SavedAuthState) {
+  saveJson(AUTH_STORAGE_KEY, state);
+}
+
+export function clearSavedAuth() {
+  localStorage.removeItem(AUTH_STORAGE_KEY);
 }
 
 function loadJson<T>(key: string): T | null {

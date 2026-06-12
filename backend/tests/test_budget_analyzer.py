@@ -26,3 +26,19 @@ def test_analyze_budget_returns_score_and_recommendations():
     assert analysis.savings_target_monthly == 200
     assert analysis.budget_score > 0
     assert len(analysis.recommendations) >= 1
+
+
+def test_analyze_budget_accepts_three_starter_categories():
+    budget = BudgetInput(
+        monthly_income=4000,
+        categories=[
+            {"name": "housing", "amount": 1200},
+            {"name": "food", "amount": 450},
+            {"name": "transportation", "amount": 300},
+        ],
+    )
+
+    analysis = analyze_budget(budget)
+
+    assert analysis.total_expenses == 1950
+    assert len(analysis.category_insights) == 3

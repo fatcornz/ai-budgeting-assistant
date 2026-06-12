@@ -1,16 +1,48 @@
-export type CategoryName =
-  | 'housing'
-  | 'food'
-  | 'transportation'
-  | 'utilities'
-  | 'insurance'
-  | 'debt'
-  | 'entertainment'
-  | 'shopping'
-  | 'healthcare'
-  | 'subscriptions'
-  | 'education'
-  | 'other';
+export const CATEGORY_OPTIONS = [
+  'housing',
+  'food',
+  'transportation',
+  'utilities',
+  'insurance',
+  'healthcare',
+  'debt',
+  'services',
+  'subscriptions',
+  'shopping',
+  'entertainment',
+  'education',
+  'travel',
+  'childcare',
+  'personal care',
+  'gifts',
+  'pets',
+  'other'
+] as const;
+
+export type CategoryName = (typeof CATEGORY_OPTIONS)[number];
+
+export const STARTER_CATEGORIES: CategoryName[] = ['housing', 'food', 'transportation'];
+
+export const CATEGORY_LABELS: Record<CategoryName, string> = {
+  housing: 'Housing',
+  food: 'Food & Drinks',
+  transportation: 'Transportation',
+  utilities: 'Utilities',
+  insurance: 'Insurance',
+  healthcare: 'Healthcare',
+  debt: 'Debt',
+  services: 'Services',
+  subscriptions: 'Subscriptions',
+  shopping: 'Shopping',
+  entertainment: 'Entertainment',
+  education: 'Education',
+  travel: 'Travel',
+  childcare: 'Childcare',
+  'personal care': 'Personal care',
+  gifts: 'Gifts',
+  pets: 'Pets',
+  other: 'Other'
+};
 
 export type Status = 'low' | 'healthy' | 'watch' | 'high';
 
@@ -69,4 +101,54 @@ export interface ChatResponse {
   reply: string;
   suggested_actions: string[];
   used_llm: boolean;
+}
+
+export interface AuthResponse {
+  token: string;
+  username: string;
+}
+
+export interface BudgetProfile {
+  id: number;
+  name: string;
+  budget: BudgetInput;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BudgetHistoryEntry {
+  id: number;
+  profile_id: number;
+  month: string;
+  budget: BudgetInput;
+  analysis: BudgetAnalysis;
+  created_at: string;
+}
+
+export interface CsvCategorizeResponse {
+  categories: BudgetCategory[];
+  imported_rows: number;
+  skipped_rows: number;
+}
+
+export interface LessonSnippet {
+  title: string;
+  topic: string;
+  content: string;
+}
+
+export interface LessonSearchResponse {
+  snippets: LessonSnippet[];
+}
+
+export interface ChatEvaluationResult {
+  prompt: string;
+  passed: boolean;
+  notes: string;
+}
+
+export interface ChatEvaluationResponse {
+  passed: number;
+  failed: number;
+  results: ChatEvaluationResult[];
 }

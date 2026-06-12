@@ -15,7 +15,7 @@ const currency = new Intl.NumberFormat('en-US', {
 export function Dashboard({ analysis }: DashboardProps) {
   if (!analysis) {
     return (
-      <section className="panel empty-state">
+      <section className="panel empty-state section-anchor" id="dashboard">
         <TrendingUp size={36} />
         <h2>Enter a budget to view analysis</h2>
         <p>The assistant will analyze income, expenses, savings goals, debt payments, and category-level spending.</p>
@@ -26,7 +26,7 @@ export function Dashboard({ analysis }: DashboardProps) {
   const scoreTone = analysis.budget_score >= 80 ? 'good' : analysis.budget_score >= 60 ? 'warn' : 'bad';
 
   return (
-    <section className="dashboard-grid">
+    <section className="dashboard-grid section-anchor" id="dashboard">
       <div className={`score-card ${scoreTone}`}>
         <span className="eyebrow">Budget score</span>
         <strong>{analysis.budget_score}</strong>

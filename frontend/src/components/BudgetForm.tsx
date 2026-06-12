@@ -1,21 +1,15 @@
 import { ChangeEvent, useRef, useState } from 'react';
 import { Download, Plus, RotateCcw, Save, Trash2, Upload } from 'lucide-react';
-import type { BudgetCategory, BudgetInput, CategoryName, DebtPayment, SavingsGoal } from '../types/budget';
-
-const CATEGORY_OPTIONS: CategoryName[] = [
-  'housing',
-  'food',
-  'transportation',
-  'utilities',
-  'insurance',
-  'debt',
-  'entertainment',
-  'shopping',
-  'healthcare',
-  'subscriptions',
-  'education',
-  'other'
-];
+import {
+  CATEGORY_LABELS,
+  CATEGORY_OPTIONS,
+  STARTER_CATEGORIES,
+  type BudgetCategory,
+  type BudgetInput,
+  type CategoryName,
+  type DebtPayment,
+  type SavingsGoal
+} from '../types/budget';
 
 interface BudgetFormProps {
   budget: BudgetInput;
@@ -65,14 +59,16 @@ export function BudgetForm({
   };
 
   const addCategory = () => {
+    const usedCategories = new Set(budget.categories.map((category) => category.name));
+    const nextCategory = CATEGORY_OPTIONS.find((option) => !usedCategories.has(option)) ?? 'other';
     onBudgetChange({
       ...budget,
-      categories: [...budget.categories, { name: 'other', amount: 0 }]
+      categories: [...budget.categories, { name: nextCategory, amount: 0 }]
     });
   };
 
   const removeCategory = (index: number) => {
-    if (budget.categories.length <= 5) return;
+    if (budget.categories.length <= STARTER_CATEGORIES.length) return;
     onBudgetChange({
       ...budget,
       categories: budget.categories.filter((_, currentIndex) => currentIndex !== index)
@@ -93,7 +89,17 @@ export function BudgetForm({
       ...budget,
       savings_goals: [
         ...budget.savings_goals,
-        { name: 'New Goal', target_amount: 1000, current_amount: 0, months_to_goal: 12 }
+        { name: 'New Goal', target_amount: 1000, current_amount: 0, months_to_goal: 18 }
+      ]
+    });
+  };
+
+  const addAnnualGoal = () => {
+    onBudgetChange({
+      ...budget,
+      savings_goals: [
+        ...budget.savings_goals,
+        { name: 'Annual Goal', target_amount: 12000, current_amount: 0, months_to_goal: 12 }
       ]
     });
   };
@@ -132,7 +138,7 @@ export function BudgetForm({
   };
 
   return (
-    <section className="panel budget-form">
+    <section className="panel budget-form section-anchor" id="budget-profile">
       <div className="section-header">
         <div>
           <span className="eyebrow">Input</span>
@@ -142,6 +148,13 @@ export function BudgetForm({
           <RotateCcw size={16} /> Sample data
         </button>
       </div>
+
+      <nav className="form-tabs" aria-label="Budget form sections">
+        <a href="#budget-income">Income</a>
+        <a href="#budget-spending">Spending</a>
+        <a href="#budget-goals">Goals</a>
+        <a href="#budget-debt">Debt</a>
+      </nav>
 
       <div className="memory-panel">
         <div>
@@ -165,7 +178,7 @@ export function BudgetForm({
         {importError && <p className="form-error">{importError}</p>}
       </div>
 
-      <label className="input-label">
+      <label className="input-label section-anchor" id="budget-income">
         Monthly income
         <input
           type="number"
@@ -175,7 +188,7 @@ export function BudgetForm({
         />
       </label>
 
-      <div className="subsection-title">
+      <div className="subsection-title section-anchor" id="budget-spending">
         <h3>Spending categories</h3>
         <button className="small-button" type="button" onClick={addCategory}>
           <Plus size={15} /> Add
@@ -191,7 +204,7 @@ export function BudgetForm({
             >
               {CATEGORY_OPTIONS.map((option) => (
                 <option value={option} key={option}>
-                  {option}
+                  {CATEGORY_LABELS[option]}
                 </option>
               ))}
             </select>
@@ -206,7 +219,7 @@ export function BudgetForm({
               type="button"
               aria-label="Remove category"
               onClick={() => removeCategory(index)}
-              disabled={budget.categories.length <= 5}
+              disabled={budget.categories.length <= STARTER_CATEGORIES.length}
             >
               <Trash2 size={15} />
             </button>
@@ -214,11 +227,16 @@ export function BudgetForm({
         ))}
       </div>
 
-      <div className="subsection-title">
+      <div className="subsection-title section-anchor" id="budget-goals">
         <h3>Savings goals</h3>
-        <button className="small-button" type="button" onClick={addGoal}>
-          <Plus size={15} /> Add
-        </button>
+        <div className="section-actions">
+          <button className="small-button" type="button" onClick={addAnnualGoal}>
+            <Plus size={15} /> Annual
+          </button>
+          <button className="small-button" type="button" onClick={addGoal}>
+            <Plus size={15} /> Add
+          </button>
+        </div>
       </div>
 
       <div className="stacked-list">
@@ -245,10 +263,11 @@ export function BudgetForm({
                 />
               </label>
               <label>
-                Months
+                Timeline
                 <input
                   type="number"
                   min="1"
+                  max="1200"
                   value={goal.months_to_goal}
                   onChange={(event) => updateGoal(index, { months_to_goal: Number(event.target.value) })}
                 />
@@ -261,7 +280,7 @@ export function BudgetForm({
         ))}
       </div>
 
-      <div className="subsection-title">
+      <div className="subsection-title section-anchor" id="budget-debt">
         <h3>Debt payments</h3>
         <button className="small-button" type="button" onClick={addDebt}>
           <Plus size={15} /> Add

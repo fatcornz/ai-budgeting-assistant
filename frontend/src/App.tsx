@@ -1,32 +1,25 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Bot, HardDrive, WalletCards } from 'lucide-react';
 import { analyzeBudget, fetchSampleBudget } from './lib/api';
+import { AccountPanel } from './components/AccountPanel';
 import { BudgetForm } from './components/BudgetForm';
 import { Chatbot } from './components/Chatbot';
 import { Dashboard } from './components/Dashboard';
+import { PlanningTools } from './components/PlanningTools';
 import { ProgressTracker } from './components/ProgressTracker';
 import { clearSavedBudget, clearSavedChat, loadSavedBudget, saveBudget } from './lib/storage';
-import type { BudgetAnalysis, BudgetInput } from './types/budget';
+import { CATEGORY_OPTIONS, STARTER_CATEGORIES, type BudgetAnalysis, type BudgetInput } from './types/budget';
 
 const fallbackBudget: BudgetInput = {
   monthly_income: 4200,
   categories: [
     { name: 'housing', amount: 1250 },
     { name: 'food', amount: 520 },
-    { name: 'transportation', amount: 300 },
-    { name: 'utilities', amount: 210 },
-    { name: 'insurance', amount: 180 },
-    { name: 'debt', amount: 250 },
-    { name: 'entertainment', amount: 280 },
-    { name: 'shopping', amount: 340 },
-    { name: 'healthcare', amount: 90 },
-    { name: 'subscriptions', amount: 70 },
-    { name: 'education', amount: 60 },
-    { name: 'other', amount: 110 }
+    { name: 'transportation', amount: 300 }
   ],
   savings_goals: [
-    { name: 'Emergency Fund', target_amount: 5000, current_amount: 1800, months_to_goal: 18 },
-    { name: 'Moving Fund', target_amount: 1500, current_amount: 450, months_to_goal: 8 }
+    { name: 'Annual Savings Goal', target_amount: 12000, current_amount: 1800, months_to_goal: 12 },
+    { name: 'Emergency Fund', target_amount: 5000, current_amount: 1800, months_to_goal: 18 }
   ],
   debt_payments: [
     { name: 'Student Loan', balance: 8500, minimum_payment: 150, interest_rate: 5.2 },
@@ -106,35 +99,55 @@ function App() {
     setBudget(fallbackBudget);
   };
 
+  const applyImportedCategories = (categories: BudgetInput['categories']) => {
+    const imported = new Map(categories.map((category) => [category.name, category.amount]));
+    const names = CATEGORY_OPTIONS.filter((name) => STARTER_CATEGORIES.includes(name) || imported.has(name));
+    setBudget({
+      ...budget,
+      categories: names.map((name) => ({
+        name,
+        amount: imported.get(name) ?? 0
+      }))
+    });
+  };
+
   return (
     <main className="app-shell">
       <header className="hero">
         <div className="hero-copy">
           <span className="project-tag"><Bot size={16} /> AI Budgeting Assistant</span>
-          <h1>Interactive budget analysis with chatbot explanations.</h1>
+          <h1>Build a budget you can keep using.</h1>
           <p>
-            A full-stack React, TypeScript, and Python project that analyzes financial data across income,
-            expenses, savings goals, debt payments, and spending categories.
+            Enter income, spending, savings goals, and debt payments. Track monthly progress, annual goals,
+            imported statement totals, and the tradeoffs that matter over time.
           </p>
           <div className="hero-actions">
             <a className="primary-link" href="#assistant">
               Try the assistant
             </a>
-            <a className="secondary-link" href="https://github.com/" target="_blank" rel="noreferrer">
-              Push to GitHub
-            </a>
           </div>
         </div>
         <div className="hero-card">
           <WalletCards size={34} />
-          <span>Backend status</span>
+          <span>App status</span>
           <strong className={apiStatus}>{apiStatus}</strong>
-          <p>FastAPI budget engine + optional LLM chatbot responses.</p>
+          <p>Budget analysis, profile saving, imports, and assistant chat.</p>
           <span className="storage-status">
             <HardDrive size={15} /> Local memory {saveStatus}
           </span>
         </div>
       </header>
+
+      <nav className="page-tabs" aria-label="Budget workspace sections">
+        <a href="#budget-profile">Budget</a>
+        <a href="#budget-spending">Spending</a>
+        <a href="#budget-goals">Goals</a>
+        <a href="#budget-debt">Debt</a>
+        <a href="#dashboard">Dashboard</a>
+        <a href="#tracker">Tracker</a>
+        <a href="#bank-import">Import</a>
+        <a href="#assistant">Assistant</a>
+      </nav>
 
       <section className="layout-grid">
         <BudgetForm
@@ -147,9 +160,11 @@ function App() {
           saveStatus={saveStatus}
         />
         <div className="main-column">
+          <AccountPanel budget={budget} onBudgetChange={setBudget} />
           <Dashboard analysis={analysis} />
           <ProgressTracker budget={budget} />
-          <div id="assistant">
+          <PlanningTools budget={budget} onApplyCategories={applyImportedCategories} />
+          <div id="assistant" className="section-anchor">
             <Chatbot budget={budget} />
           </div>
         </div>
@@ -166,7 +181,7 @@ function isBudgetInput(value: unknown): value is BudgetInput {
   return (
     typeof candidate.monthly_income === 'number' &&
     Array.isArray(candidate.categories) &&
-    candidate.categories.length >= 5 &&
+    candidate.categories.length >= STARTER_CATEGORIES.length &&
     candidate.categories.every((category) => typeof category.name === 'string' && typeof category.amount === 'number') &&
     Array.isArray(candidate.savings_goals) &&
     Array.isArray(candidate.debt_payments)
